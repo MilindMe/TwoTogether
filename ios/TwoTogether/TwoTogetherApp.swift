@@ -42,7 +42,7 @@ import UserNotifications
     @Environment(\.scenePhase) private var phase
     var body: some Scene {
         WindowGroup {
-            RootView().environment(store).tint(.indigo)
+            RootView().environment(store)
                 .onAppear {
                     delegate.store = store
                     #if PUSH_NOTIFICATIONS

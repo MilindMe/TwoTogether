@@ -78,6 +78,15 @@ public enum Tracking {
         let elapsed = dates.filter { $0 <= today && habit.isScheduled($0) }
         return (elapsed.filter(isComplete).count, elapsed.count)
     }
+    // Consecutive completed scheduled days. An open today doesn't break the streak; rest days are skipped.
+    public static func streak(habit: Habit, today: String, isComplete: (String) -> Bool) -> Int {
+        var date = isComplete(today) ? today : adding(-1, to: today), count = 0
+        while date >= habit.start {
+            if habit.isScheduled(date) { guard isComplete(date) else { break }; count += 1 }
+            date = adding(-1, to: date)
+        }
+        return count
+    }
 }
 
 public struct CachedState: Codable, Sendable {

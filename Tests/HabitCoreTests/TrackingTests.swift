@@ -27,6 +27,16 @@ final class TrackingTests: XCTestCase {
         let t = Tracking.totals(habit: h, dates: Tracking.week(containing: "2026-10-22"), today: "2026-10-25") { $0 == "2026-10-22" }
         XCTAssertEqual(t.done, 1); XCTAssertEqual(t.elapsed, 2)
     }
+    func testStreakSkipsRestDaysAndOpenToday() throws {
+        let h = try JSONDecoder().decode(Habit.self, from: Data("""
+        {"id":"walk","owner":"alex","name":"Walk","icon":"figure.walk","color":"green","start":"2026-10-19","archive":null,"schedules":[{"effective":"2026-10-19","weekdays":[1,2,3,4,5]}]}
+        """.utf8))
+        let weekdays = Set(["2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23"])
+        XCTAssertEqual(Tracking.streak(habit: h, today: "2026-10-26") { weekdays.contains($0) }, 5)
+        XCTAssertEqual(Tracking.streak(habit: h, today: "2026-10-26") { weekdays.contains($0) || $0 == "2026-10-26" }, 6)
+        XCTAssertEqual(Tracking.streak(habit: h, today: "2026-10-26") { weekdays.contains($0) && $0 != "2026-10-21" }, 2)
+        XCTAssertEqual(Tracking.streak(habit: h, today: "2026-10-19") { _ in false }, 0)
+    }
     func testTrackingTimezoneIgnoresTravelAndHandlesDST() {
         let f = ISO8601DateFormatter()
         for (stamp, expected) in [("2026-10-23T03:59:59Z", "2026-10-22"), ("2026-10-23T04:00:00Z", "2026-10-23"), ("2026-11-01T05:30:00Z", "2026-11-01"), ("2026-11-01T06:30:00Z", "2026-11-01")] {
