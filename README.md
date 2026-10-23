@@ -1,6 +1,5 @@
 # Two Together
-
-A private SwiftUI iOS app for one fixed pair. Includes a Python/SQLite API, a durable completion outbox, and optional Apple Push Notification service delivery. iOS 17+, Python 3.11+. No third-party app or Python dependencies.
+Habit Tracker that syncs you and your partner on your goals!
 
 ## Open the app
 
