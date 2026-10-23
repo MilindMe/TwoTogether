@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: backend
+    restart: unless-stopped
+    volumes:
+      - habits:/data
+      - ./secrets:/secrets:ro
+    environment:
+      APNS_KEY_ID: ${APNS_KEY_ID:-}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:-}
+      APNS_KEY_PATH: ${APNS_KEY_PATH:-/secrets/apns.p8}
+      APNS_TOPIC: ${APNS_TOPIC:-com.twotogether.habits}
+      APNS_SANDBOX: ${APNS_SANDBOX:-true}
+  https:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      HABITS_DOMAIN: ${HABITS_DOMAIN:?Set HABITS_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+volumes:
+  habits:
+  caddy_data:
+  caddy_config:

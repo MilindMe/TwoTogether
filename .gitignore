@@ -1,0 +1,13 @@
+.build/
+build/
+.swiftpm/
+**/__pycache__/
+data/
+.env
+*.p8
+*.sqlite*
+*.xcuserstate
+xcuserdata/
+.DS_Store
+
+secrets/

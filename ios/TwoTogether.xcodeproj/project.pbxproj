@@ -1,0 +1,231 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33D673C0F39F056D9389CD10 /* TwoTogether/TwoTogetherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D463C4ADF4B0566325E9189 /* TwoTogether/TwoTogetherApp.swift */; };
+		58CCE165A56242C27F8738E9 /* ../Sources/HabitCore/Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B245AC1A9E26FE55EAA2C41F /* ../Sources/HabitCore/Models.swift */; };
+		716E9590E60B3AFA6E62BF18 /* TwoTogether/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3685E330EC5277A9DD5661C6 /* TwoTogether/Assets.xcassets */; };
+		8737873C8438CE21E9208E3D /* TwoTogether/Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8276FD7A64467E19C03442 /* TwoTogether/Views.swift */; };
+		9D4607AEC3FE42CA16E53690 /* TwoTogether/Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2711FD53CA505A204121D0C2 /* TwoTogether/Store.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2711FD53CA505A204121D0C2 /* TwoTogether/Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoTogether/Store.swift; sourceTree = SOURCE_ROOT; };
+		3685E330EC5277A9DD5661C6 /* TwoTogether/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TwoTogether/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		38A007151ABE87CC01A5B6E9 /* TwoTogether.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = TwoTogether.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D463C4ADF4B0566325E9189 /* TwoTogether/TwoTogetherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoTogether/TwoTogetherApp.swift; sourceTree = SOURCE_ROOT; };
+		8F8276FD7A64467E19C03442 /* TwoTogether/Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoTogether/Views.swift; sourceTree = SOURCE_ROOT; };
+		B245AC1A9E26FE55EAA2C41F /* ../Sources/HabitCore/Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Sources/HabitCore/Models.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7561BFB015D8F536760CB671 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		325F10A6957A34D66CB8C0E4 = {
+			isa = PBXGroup;
+			children = (
+				2711FD53CA505A204121D0C2 /* TwoTogether/Store.swift */,
+				3D463C4ADF4B0566325E9189 /* TwoTogether/TwoTogetherApp.swift */,
+				8F8276FD7A64467E19C03442 /* TwoTogether/Views.swift */,
+				B245AC1A9E26FE55EAA2C41F /* ../Sources/HabitCore/Models.swift */,
+				3685E330EC5277A9DD5661C6 /* TwoTogether/Assets.xcassets */,
+				FBDC4F23F93125BBEEAE800C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FBDC4F23F93125BBEEAE800C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				38A007151ABE87CC01A5B6E9 /* TwoTogether.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E8A3AD980EC179856012B7E /* TwoTogether */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F37922C48DA5978D02C9E50E /* Build configuration list for PBXNativeTarget "TwoTogether" */;
+			buildPhases = (
+				BCE16DD0260827ECF338C787 /* Sources */,
+				7561BFB015D8F536760CB671 /* Frameworks */,
+				0189424A5A60FED329FA868E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TwoTogether;
+			productName = TwoTogether;
+			productReference = 38A007151ABE87CC01A5B6E9 /* TwoTogether.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		98F54143AB4E86B28C3AFEE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					0E8A3AD980EC179856012B7E = {
+						CreatedOnToolsVersion = 27.1;
+					};
+				};
+			};
+			buildConfigurationList = 862894B703A6DEDF96A9DD6C /* Build configuration list for PBXProject "TwoTogether" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 325F10A6957A34D66CB8C0E4;
+			productRefGroup = FBDC4F23F93125BBEEAE800C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E8A3AD980EC179856012B7E /* TwoTogether */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0189424A5A60FED329FA868E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				716E9590E60B3AFA6E62BF18 /* TwoTogether/Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCE16DD0260827ECF338C787 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9D4607AEC3FE42CA16E53690 /* TwoTogether/Store.swift in Sources */,
+				33D673C0F39F056D9389CD10 /* TwoTogether/TwoTogetherApp.swift in Sources */,
+				8737873C8438CE21E9208E3D /* TwoTogether/Views.swift in Sources */,
+				58CCE165A56242C27F8738E9 /* ../Sources/HabitCore/Models.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5A8C91857F674E16E2724F47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TwoTogether/TwoTogether.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6K76WJ5WWY;
+				INFOPLIST_FILE = TwoTogether/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twotogether.habits;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PUSH_NOTIFICATIONS;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		89E1FD6268CC0F221A2BE178 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E6DE6C99132752C914FEF632 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		E9B2E96ABC5F6856F2BE79CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TwoTogether/TwoTogetherLocal.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6K76WJ5WWY;
+				INFOPLIST_FILE = TwoTogether/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twotogether.habits;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		862894B703A6DEDF96A9DD6C /* Build configuration list for PBXProject "TwoTogether" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E1FD6268CC0F221A2BE178 /* Debug */,
+				E6DE6C99132752C914FEF632 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F37922C48DA5978D02C9E50E /* Build configuration list for PBXNativeTarget "TwoTogether" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B2E96ABC5F6856F2BE79CF /* Debug */,
+				5A8C91857F674E16E2724F47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+}
