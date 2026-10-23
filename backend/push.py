@@ -43,11 +43,11 @@ def deliver_pending(store):
                 for token in tokens:
                     db.execute('INSERT OR IGNORE INTO push_jobs(nudge,token) VALUES(?,?)', (nudge['id'], token[0]))
                 db.execute("UPDATE nudges SET delivery='queued' WHERE id=?", (nudge['id'],))
-        jobs = db.execute("SELECT j.*,n.habit,n.date FROM push_jobs j JOIN nudges n ON n.id=j.nudge WHERE j.state='pending' AND j.next_try<=?", (time.time(),)).fetchall()
+        jobs = db.execute("SELECT j.*,n.habit,n.date,p.name AS sender,h.name AS habit_name FROM push_jobs j JOIN nudges n ON n.id=j.nudge JOIN people p ON p.id=n.sender JOIN habits h ON h.id=n.habit WHERE j.state='pending' AND j.next_try<=?", (time.time(),)).fetchall()
     jwt = provider_token() if jobs else None
     host = 'api.sandbox.push.apple.com' if os.getenv('APNS_SANDBOX', 'true').lower() == 'true' else 'api.push.apple.com'
     for job in jobs:
-        payload = {'aps': {'alert': {'title': 'A gentle nudge', 'body': 'A little encouragement from your partner. You’ve got this!'}, 'sound': 'default'}, 'habit': job['habit'], 'nudge': job['nudge']}
+        payload = {'aps': {'alert': {'body': f'{job["sender"]} nudged you about {job["habit_name"]}.'}, 'sound': 'default'}, 'habit': job['habit'], 'nudge': job['nudge']}
         # Credentials are passed through stdin config, not command arguments.
         config = f'header = "authorization: bearer {jwt}"\n'
         result = subprocess.run(['curl', '--config', '-', '--http2', '--silent', '--show-error', '--max-time', '15', '--request', 'POST', '--header', f'apns-topic: {os.environ["APNS_TOPIC"]}', '--header', 'apns-push-type: alert', '--header', 'apns-priority: 10', '--header', f'apns-id: {job["nudge"]}', '--header', f'apns-collapse-id: {job["nudge"]}', '--header', f'apns-expiration: {int(time.time()) + 3600}', '--data-binary', json.dumps(payload), '--write-out', '\n%{http_code}', f'https://{host}/3/device/{job["token"]}'], input=config.encode(), capture_output=True)

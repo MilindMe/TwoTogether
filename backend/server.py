@@ -14,8 +14,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-ICONS = {'leaf.fill', 'figure.walk', 'book.fill', 'drop.fill', 'moon.fill', 'heart.fill', 'sun.max.fill', 'dumbbell.fill'}
-COLORS = {'green', 'blue', 'purple', 'orange', 'pink', 'teal'}
+ICONS = {'leaf.fill', 'figure.walk', 'figure.run', 'book.fill', 'drop.fill', 'moon.fill', 'bed.double.fill', 'heart.fill', 'sun.max.fill', 'dumbbell.fill', 'fork.knife', 'pencil', 'music.note', 'brain.head.profile'}
+COLORS = {'red', 'orange', 'yellow', 'green', 'mint', 'teal', 'blue', 'indigo', 'purple', 'pink'}
 MESSAGE = 'A little encouragement from your partner. You’ve got this!'
 SCHEMA = '''
 PRAGMA journal_mode=WAL;
