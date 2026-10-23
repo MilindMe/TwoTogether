@@ -11,11 +11,13 @@ struct RootView: View {
             if store.account == nil { LoginView() }
             else {
                 TabView(selection: $store.selectedTab) {
-                    TodayView().tabItem { Label("Today", systemImage: "square.grid.2x2.fill") }.tag(0)
-                    PartnersView().tabItem { Label("Partners", systemImage: "person.2.fill") }.tag(1)
+                    TodayView().tabItem { Label("Grove", systemImage: "tree.fill") }.tag(0)
+                    PartnersView().tabItem { Label("Together", systemImage: "person.2.fill") }.tag(1)
                         .badge(store.state.snapshot?.nudges.filter { $0.recipient == store.me && $0.read == 0 }.count ?? 0)
                     ProgressTab().tabItem { Label("Progress", systemImage: "chart.bar.fill") }.tag(2)
                 }
+                .tint(.green)
+                .overlay(alignment: .top) { LevelUpBanner() }
             }
         }
         .alert(store.error ?? "", isPresented: Binding(get: { store.error != nil }, set: { if !$0 { store.error = nil } })) {
@@ -80,7 +82,7 @@ struct SettingsView: View {
                 } footer: { Text("Your partner can see all your habits and history. Dates follow this time zone when you travel.") }
                 Section {
                     Toggle("Calm cards", isOn: $calm)
-                } footer: { Text("Shows habit colors only in symbols, rings and day dots.") }
+                } footer: { Text("Keeps cards neutral and shows tree colors only in the trees, bars and day dots.") }
                 Section {
                     #if PUSH_NOTIFICATIONS
                     Button("Turn on notifications") { Task { await store.enableNotifications() } }
@@ -97,5 +99,38 @@ struct SettingsView: View {
             .navigationTitle("Settings").navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
+    }
+}
+
+/// Celebrates a tree reaching a new stage, then gets out of the way.
+struct LevelUpBanner: View {
+    @Environment(AppStore.self) private var store
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    var body: some View {
+        ZStack {
+            if let up = store.levelUp {
+                HStack(spacing: 10) {
+                    Image(systemName: "sparkles").font(.title3.weight(.bold)).foregroundStyle(Palette.gold)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Level \(up.stage.rawValue + 1)!").font(.system(.headline, design: .rounded, weight: .heavy))
+                        Text("\(up.name) grew into a \(up.stage.name.lowercased()).").font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.horizontal, 18).padding(.vertical, 12)
+                .background(.regularMaterial, in: Capsule())
+                .overlay(Capsule().strokeBorder(Palette.color(up.color), lineWidth: 2))
+                .shadow(color: .black.opacity(0.15), radius: 12, y: 6)
+                .padding(.top, 8)
+                .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
+                .accessibilityElement(children: .combine)
+                .onTapGesture { store.levelUp = nil }
+                .task(id: up) {
+                    try? await Task.sleep(for: .seconds(3))
+                    withAnimation(.standard) { if store.levelUp == up { store.levelUp = nil } }
+                }
+            }
+        }
+        .animation(reduceMotion ? nil : .bouncy, value: store.levelUp)
+        .sensoryFeedback(.levelChange, trigger: store.levelUp) { _, new in new != nil }
     }
 }

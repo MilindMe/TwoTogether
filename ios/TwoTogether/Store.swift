@@ -6,6 +6,8 @@ import Security
 import UserNotifications
 
 struct Account: Codable { var server: String; var key: String }
+/// A tree that just reached a new stage, for the celebration banner.
+struct LevelUp: Equatable { var habit: String; var name: String; var color: String; var stage: Stage }
 typealias DiskState = CachedState
 struct ServiceError: Error, LocalizedError {
     let status: Int; let message: String
@@ -42,6 +44,7 @@ enum Vault {
     var focusedHabit: String?
     var selectedTab = 0
     var deviceToken: String?
+    var levelUp: LevelUp?
     var today: String { Tracking.today(timezone: state.snapshot?.timezone ?? "America/Toronto") }
     var me: String { state.snapshot?.me ?? "" }
     var partner: Person? { state.snapshot?.people.first { $0.id != me } }
@@ -93,8 +96,11 @@ enum Vault {
     func toggle(_ habit: Habit, _ date: String) {
         guard canCorrect(habit, date) else { return }
         let prior = state
+        let before = growth(habit).stage
         state.pending.append(PendingCompletion(habit: habit.id, date: date, completed: !isComplete(habit.id, date)))
         do { try persist() } catch { state = prior; self.error = "Couldn’t save your check-in on this device. Try again."; return }
+        let after = growth(habit).stage
+        if after > before { levelUp = LevelUp(habit: habit.id, name: habit.name, color: habit.color, stage: after) }
         Task { await sync() }
     }
     func sync() async {
@@ -129,6 +135,13 @@ enum Vault {
     func nudgeSent(_ h: Habit) -> Bool {
         state.snapshot?.nudges.contains { $0.sender == me && $0.habit == h.id && $0.date == today } ?? false
     }
+    func growth(_ h: Habit) -> Growth { Tracking.growth(habit: h, today: today) { isComplete(h.id, $0) } }
+    func tree(_ h: Habit) -> TreeSpec { TreeSpec(habit: h, growth: growth(h)) }
+    /// Scheduled habits done today, for one person.
+    func watered(_ person: String) -> (done: Int, due: Int) {
+        let due = (state.snapshot?.habits ?? []).filter { $0.owner == person && $0.isScheduled(today) }
+        return (due.filter { isComplete($0.id, today) }.count, due.count)
+    }
     func streak(_ h: Habit) -> Int { Tracking.streak(habit: h, today: today) { isComplete(h.id, $0) } }
     func week(_ h: Habit, offset: Int = 0) -> (done: Int, elapsed: Int) {
         Tracking.totals(habit: h, dates: Tracking.week(containing: today, offset: offset), today: today) { isComplete(h.id, $0) }
@@ -153,7 +166,7 @@ enum Vault {
             if accepted { UIApplication.shared.registerForRemoteNotifications() }
         } catch { self.error = error.localizedDescription }
         #else
-        self.error = "Notifications need an Apple Developer Program team. Nudges still appear in Partners."
+        self.error = "Notifications need an Apple Developer Program team. Nudges still appear in Together."
         #endif
     }
     func registerDevice(_ token: String) async throws {

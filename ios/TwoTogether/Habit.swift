@@ -16,23 +16,27 @@ struct HabitDetailView: View {
         let mine = habit.owner == store.me
         let dates = Tracking.week(containing: store.today)
         let week = store.week(habit)
+        let growth = store.growth(habit)
         return List {
-            // The hero lives in a header so list row clipping doesn't override its 22 pt corners.
+            // The hero lives in a header so list row clipping doesn't override its corners.
             Section {
                 SevenDayStrip(habit: habit, dates: dates, ink: CardInk(habit: habit, tinted: false)).padding(.vertical, 8)
                 LabeledContent("Done") {
                     Text("\(week.done) of \(week.elapsed)").font(.system(.body, design: .rounded, weight: .semibold).monospacedDigit())
                 }
             } header: {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text(habit.name).font(.title2.bold()).foregroundStyle(Color.primary)
-                    hero(habit).widget(364 / 382)
+                VStack(alignment: .leading, spacing: 20) {
+                    hero(habit)
+                    stats(habit, growth)
                     Text("This week").padding(.horizontal, Metric.padding)
                 }.textCase(nil).listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
             }
             if mine { corrections(habit) } else { nudge(habit) }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Palette.background)
+        .navigationTitle(habit.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { if mine { Button("Edit") { editing = habit } } }
         .sheet(item: $editing) { HabitEditor(habit: $0) }
@@ -41,25 +45,52 @@ struct HabitDetailView: View {
         let scheduled = habit.isScheduled(store.today)
         let tinted = scheduled && !calm
         let ink = CardInk(habit: habit, tinted: tinted, paused: !scheduled)
-        let streak = store.streak(habit)
+        let growth = store.growth(habit)
         let done = store.isComplete(habit.id, store.today)
-        return VStack(alignment: .leading, spacing: 0) {
-            Image(systemName: habit.icon).font(.title3).foregroundStyle(ink.glyph).symbolRenderingMode(tinted ? .monochrome : .hierarchical)
-            Spacer(minLength: 16)
-            CheckRing(habit: habit, ink: ink, diameter: 128).frame(maxWidth: .infinity)
-            Spacer(minLength: 16)
-            Text(streak, format: .number).font(.system(.largeTitle, design: .rounded, weight: .bold).monospacedDigit())
-                .contentTransition(.numericText(value: Double(streak))).foregroundStyle(ink.primary)
-            Text(scheduled ? (streak == 1 ? "day in a row" : "days in a row") : "Rest day")
-                .font(.subheadline).foregroundStyle(ink.secondary).padding(.top, 4)
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 6) {
+                    StageChip(growth: growth, ink: ink)
+                    Text(Palette.species(habit.color)).font(.system(.title2, design: .rounded, weight: .bold)).foregroundStyle(ink.primary)
+                }
+                Spacer()
+                if store.canCorrect(habit, store.today) { WaterButton(habit: habit, ink: ink, diameter: 56) }
+            }
+            GrowthBar(progress: growth.progress, tint: tinted ? ink.primary : habit.accent, track: ink.track, height: 12)
+            Text(growth.stage.next.map { "\(Self.points($0.threshold - growth.points)) growth to \($0.name)" } ?? "Fully grown")
+                .font(.subheadline.weight(.medium)).foregroundStyle(ink.secondary)
         }
-        .padding(Metric.padding)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+        .padding(.top, 150)
+        .padding(Metric.padding).padding(.bottom, Metric.lip)
         .background { CardBackground(habit: habit, tinted: tinted) }
+        .padding(.top, 200)
+        .overlay(alignment: .top) {
+            TreeView(spec: store.tree(habit), interactive: true).frame(height: 360).accessibilityHidden(true)
+        }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(habit.name), \(scheduled ? (done ? "done today" : "not done today") : "rest day"), \(streak)-day streak")
-        .accessibilityAction(named: done ? "Undo check-in" : "Check off") { withAnimation(.standard) { store.toggle(habit, store.today) } }
+        .accessibilityLabel("\(Palette.species(habit.color)), \(growth.stage.name)\(growth.wilting ? ", thirsty" : ""), \(scheduled ? (done ? "done today" : "not done today") : "rest day")")
+        .accessibilityAction(named: done ? "Undo check-in" : "Water") { withAnimation(.standard) { store.toggle(habit, store.today) } }
     }
+    func stats(_ habit: Habit, _ growth: Growth) -> some View {
+        let streak = store.streak(habit)
+        return HStack(spacing: Metric.gutter) {
+            stat("Streak", "\(streak)", "flame.fill", Palette.gold)
+            stat("Best", "\(growth.bestStreak)", "trophy.fill", .orange)
+            stat("Health", "\(Int((growth.vitality * 100).rounded()))%", growth.wilting ? "drop.triangle.fill" : "drop.fill", growth.wilting ? .brown : .blue)
+        }
+    }
+    func stat(_ title: String, _ value: String, _ symbol: String, _ tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Image(systemName: symbol).foregroundStyle(tint)
+            Text(value).font(.system(.title3, design: .rounded, weight: .bold).monospacedDigit()).foregroundStyle(Color.primary)
+            Text(title).font(.caption.weight(.medium)).foregroundStyle(Color.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Metric.padding).padding(.bottom, Metric.lip)
+        .background { CardBackground(habit: nil, tinted: false) }
+        .accessibilityElement(children: .combine)
+    }
+    static func points(_ value: Double) -> String { value.formatted(.number.precision(.fractionLength(0...1))) }
     @ViewBuilder func corrections(_ habit: Habit) -> some View {
         let days = [store.today, Tracking.adding(-1, to: store.today)].filter { store.canCorrect(habit, $0) }
         Section {
@@ -110,13 +141,16 @@ struct HabitEditor: View {
                 Section {
                     TextField("Name", text: $name, prompt: Text("Read 20 pages")).onChange(of: name) { _, value in name = String(value.prefix(60)) }
                 }
-                Section("Color") {
+                Section {
+                    // A preview of this species as a young tree.
+                    TreeView(spec: TreeSpec(id: habit?.id ?? newID, color: color, level: 3.4, vitality: 1)).frame(height: 170)
+                        .frame(maxWidth: .infinity).accessibilityHidden(true)
                     swatches(Palette.names) { option in
                         Circle().fill(Palette.color(option)).frame(width: 32, height: 32).overlay {
                             if option == color { Image(systemName: "checkmark").font(.footnote.weight(.bold)).foregroundStyle(onAccent) }
                         }
-                    } selected: { $0 == color } select: { color = $0 } label: { $0.capitalized }
-                }
+                    } selected: { $0 == color } select: { color = $0 } label: { Palette.species($0) }
+                } header: { Text("Tree") } footer: { Text("\(Palette.species(color)). Your tree grows with every check-in, and faster on a streak.") }
                 Section("Symbol") {
                     swatches(icons) { option in
                         Image(systemName: option).font(.body).frame(width: 40, height: 40)

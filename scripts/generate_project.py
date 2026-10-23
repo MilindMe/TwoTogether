@@ -12,8 +12,8 @@ def add(name, value): objects.append(f'{uid(name)} = {{ {value} }};')
 files = sorted((ios / 'TwoTogether').glob('*.swift'))
 source_ids = []
 file_ids = []
-for file in files + [root / 'Sources/HabitCore/Models.swift']:
-    path = str(file.relative_to(ios)) if file.is_relative_to(ios) else '../Sources/HabitCore/Models.swift'
+for file in files + sorted((root / 'Sources/HabitCore').glob('*.swift')):
+    path = str(file.relative_to(ios)) if file.is_relative_to(ios) else '../' + str(file.relative_to(root))
     add(path, f'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "{path}"; sourceTree = SOURCE_ROOT;')
     add(path + '-build', f'isa = PBXBuildFile; fileRef = {uid(path)};')
     file_ids.append(uid(path)); source_ids.append(uid(path + '-build'))

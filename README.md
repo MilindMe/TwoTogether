@@ -56,8 +56,10 @@ Apple references: [registering with APNs](https://developer.apple.com/documentat
 
 ## Implemented behavior
 
-- Today defaults to your habits. Partner progress is read-only, with an explicit nudge action.
-- Two-column widget cards adapt to one column at accessibility text sizes. Checkmarks, text, and symbols distinguish states without relying on color.
+- Every habit grows a tree. Each check-in ("watering") adds 1 growth point, plus 1/7 per prior day of the current run, up to 3 points after two weeks. Trees pass through seven stages, from Seed to Ancient tree, at 3, 10, 25, 50, 100, and 200 points. Missed days never shrink a tree, but they lower its health (the share of the last 14 scheduled days done). Below 50%, leaves fade and thin and the card says Thirsty. Growth is computed on the device from the existing completion history; the server and API are unchanged.
+- Trees are procedural low-poly SceneKit models seeded by habit ID, so a habit keeps its shape. The habit's colour picks the species. No 3D assets or third-party dependencies are used. Trees sway gently, and reaching a new stage plays a burst of leaves and a level-up banner. With Reduce Motion on, trees are still and the render loop stops.
+- Grove (formerly Today) defaults to your trees, with today's watering for both of you at the top. Together shows your partner's grove, read-only, with nudge buttons. Drag a tree in its detail view to turn it.
+- Two-column tree cards adapt to one column at accessibility text sizes. Checkmarks, text, and symbols distinguish states without relying on color.
 - Habit creation, preset icons/colors, selected weekdays, editing, and archiving.
 - Names/appearance change immediately. Schedule edits and archives take effect tomorrow; today remains available. Prior schedules are immutable. Multiple edits on the same day replace tomorrow’s pending schedule.
 - Weekly rows use Monday–Sunday civil dates, with completed, missed, open today, future, and unscheduled states. Totals include scheduled dates through today and exclude dates before creation and on/after archive.
@@ -92,11 +94,11 @@ Errors return `{"error":"…"}` with an HTTP status. Reusing a completion operat
 ./scripts/verify.sh
 ```
 
-This runs 18 Python tests, 7 Swift tests, and an unsigned iPhoneOS build. `--disable-sandbox`/`-disable-sandbox` allow compiler subprocesses in restricted development environments; they do not change the app’s sandbox. The Xcode project is checked in; regenerate it after adding source files with `python3 scripts/generate_project.py` (then reselect your signing team).
+This runs 18 Python tests, 14 Swift tests, and an unsigned iPhoneOS build. `--disable-sandbox`/`-disable-sandbox` allow compiler subprocesses in restricted development environments; they do not change the app’s sandbox. The Xcode project is checked in; regenerate it after adding source files with `python3 scripts/generate_project.py` (then reselect your signing team).
 
 Automated tests cover authorization, concurrent writes and nudges, retries after restart, undo, correction boundaries, historical schedules, archives, timezone/DST boundaries, HTTP request parsing, push failure handling, and cache reopening. HTTP handler tests use an in-memory transport; no real server socket or live APNs connection was available in this execution environment.
 
-Verified here: all 25 tests pass and an unsigned iPhoneOS build succeeds with Xcode 27.1. Simulator launch, Docker deployment, live APNs, VoiceOver, and two physical devices have **not** been verified. This Mac has no signing identity and the execution sandbox blocks listening ports and simulator services.
+Verified here: all 32 tests pass and an unsigned iPhoneOS build succeeds with Xcode 27.0. The Grove, Together, Progress, and habit detail screens were checked in the iOS Simulator against a local backend with seeded history. Tapping through check-ins, the level-up animation, Docker deployment, live APNs, VoiceOver, and two physical devices have **not** been verified. This Mac has no signing identity and the execution sandbox blocks listening ports and simulator services.
 
 ## Install and two-week trial
 
